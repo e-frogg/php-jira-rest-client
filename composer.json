@@ -3,6 +3,7 @@
     "description": "JIRA REST API Client for PHP Users.",
     "type": "library",
     "keywords": ["jira", "rest", "jira-php", "jira-rest"],
+    "version": "5.8.0",
     "require": {
         "php": "^8.0",
         "ext-curl": "*",
