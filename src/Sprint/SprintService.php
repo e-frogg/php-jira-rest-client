@@ -47,6 +47,18 @@ class SprintService extends JiraClient
         );
     }
 
+    public function rank(string|int $sprintId, array $issueKeys): bool
+    {
+        $post = [
+            'issues' => $issueKeys,
+        ];
+        $ret = $this->exec($this->uri . '/' . $sprintId . '/issue', json_encode($post), 'POST');
+
+        $this->log->info("Result=\n" . $ret);
+
+        return $ret;
+    }
+
     /**
      * @throws JiraException
      * @throws \JsonMapper_Exception
