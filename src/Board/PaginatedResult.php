@@ -1,18 +1,11 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: keanor
- * Date: 29.07.15
- * Time: 13:12.
- */
-
-namespace JiraRestApi\Issue;
+namespace JiraRestApi\Board;
 
 /**
- * Issue search result.
+ * Paginated Result object for BoardService.
  */
-class IssueSearchResult
+class PaginatedResult
 {
     /**
      * @var string
@@ -35,9 +28,14 @@ class IssueSearchResult
     public $total;
 
     /**
-     * @var \JiraRestApi\Issue\Issue[]
+     * @var array
      */
-    public $issues;
+    public $values;
+
+    /**
+     * @var bool
+     */
+    public $isLast;
 
     /**
      * @return int
@@ -88,29 +86,29 @@ class IssueSearchResult
     }
 
     /**
-     * @return Issue[]
+     * @return array
      */
-    public function getIssues()
+    public function getValues()
     {
-        return $this->issues;
+        return $this->values;
     }
 
     /**
-     * @param Issue[] $issues
+     * @param array $values
      */
-    public function setIssues($issues)
+    public function setValues($values)
     {
-        $this->issues = $issues;
+        $this->values = $values;
     }
 
     /**
-     * @param int $ndx
+     * @param int $index
      *
-     * @return Issue
+     * @return mixed
      */
-    public function getIssue($ndx)
+    public function getValue($index)
     {
-        return $this->issues[$ndx];
+        return $this->values[$index];
     }
 
     /**

@@ -65,7 +65,7 @@ class RequestService
      *
      * @see https://docs.atlassian.com/jira-servicedesk/REST/3.6.2/#servicedeskapi/request-getCustomerRequestByIdOrKey
      */
-    public function get(string $issueId, array $expandParameters = [], Request $request = null): Request
+    public function get(string $issueId, array $expandParameters = [], ?Request $request = null): Request
     {
         $request = ($request) ?: new Request();
 
@@ -88,7 +88,7 @@ class RequestService
      *
      * @see https://docs.atlassian.com/jira-servicedesk/REST/3.6.2/#servicedeskapi/request-getMyCustomerRequests
      */
-    public function getRequestsByCustomer(Customer $customer, array $searchParameters, int $serviceDeskId = null): array
+    public function getRequestsByCustomer(Customer $customer, array $searchParameters, ?int $serviceDeskId = null): array
     {
         $defaultSearchParameters = [
             'requestOwnership' => 'OWNED_REQUESTS',
@@ -425,6 +425,26 @@ class RequestService
             json_decode($ret, false, 512, JSON_THROW_ON_ERROR),
             new Worklog()
         );
+    }
+
+    /**
+     * @param array<int> $ids
+     *
+     * @return array<Worklog>
+     */
+    public function getWorklogsByIds(array $ids): array
+    {
+        $ret = $this->client->exec('/worklog/list', json_encode(['ids' => $ids]), 'POST');
+
+        $this->logger->debug("getWorklogsByIds res=$ret\n");
+
+        $worklogsResponse = json_decode($ret, false, 512, JSON_THROW_ON_ERROR);
+
+        $worklogs = array_map(function ($worklog) {
+            return $this->jsonMapper->map($worklog, new Worklog());
+        }, $worklogsResponse);
+
+        return $worklogs;
     }
 
     /**

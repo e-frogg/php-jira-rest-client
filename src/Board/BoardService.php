@@ -14,7 +14,7 @@ class BoardService extends \JiraRestApi\JiraClient
 
     private $agileVersion = '1.0';
 
-    public function __construct(ConfigurationInterface $configuration = null, LoggerInterface $logger = null, $path = './')
+    public function __construct(?ConfigurationInterface $configuration = null, ?LoggerInterface $logger = null, $path = './')
     {
         parent::__construct($configuration, $logger, $path);
         $this->setAPIUri('/rest/agile/'.$this->agileVersion);
@@ -38,6 +38,31 @@ class BoardService extends \JiraRestApi\JiraClient
                 json_decode($json, false, 512, $this->getJsonOptions())->values,
                 new \ArrayObject(),
                 Board::class
+            );
+        } catch (\JsonException $exception) {
+            $this->log->error("Response cannot be decoded from json\nException: {$exception->getMessage()}");
+
+            return null;
+        }
+    }
+
+    /**
+     * Get list of boards with paginated results.
+     *
+     * @param array $paramArray
+     *
+     * @throws \JiraRestApi\JiraException
+     *
+     * @return PaginatedResult|null array of Board class
+     */
+    public function getBoards($paramArray = []): ?PaginatedResult
+    {
+        $json = $this->exec($this->uri.$this->toHttpQueryParameter($paramArray), null);
+
+        try {
+            return $this->json_mapper->map(
+                json_decode($json, false, 512, $this->getJsonOptions()),
+                new PaginatedResult()
             );
         } catch (\JsonException $exception) {
             $this->log->error("Response cannot be decoded from json\nException: {$exception->getMessage()}");
@@ -114,6 +139,31 @@ class BoardService extends \JiraRestApi\JiraClient
                 json_decode($json, false, 512, $this->getJsonOptions())->values,
                 new \ArrayObject(),
                 Sprint::class
+            );
+        } catch (\JsonException $exception) {
+            $this->log->error("Response cannot be decoded from json\nException: {$exception->getMessage()}");
+
+            return null;
+        }
+    }
+
+    /**
+     * Get list of boards with paginated results.
+     *
+     * @param array $paramArray
+     *
+     * @throws \JiraRestApi\JiraException
+     *
+     * @return PaginatedResult|null array of Board class
+     */
+    public function getSprintsForBoard($boardId, $paramArray = []): ?PaginatedResult
+    {
+        $json = $this->exec($this->uri.'/'.$boardId.'/sprint'.$this->toHttpQueryParameter($paramArray), null);
+
+        try {
+            return $this->json_mapper->map(
+                json_decode($json, false, 512, $this->getJsonOptions()),
+                new PaginatedResult()
             );
         } catch (\JsonException $exception) {
             $this->log->error("Response cannot be decoded from json\nException: {$exception->getMessage()}");
