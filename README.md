@@ -1203,7 +1203,7 @@ $jql = 'project not in (TEST)  and assignee = currentUser() and status in (Resol
 try {
     $issueService = new IssueService();
 
-    $ret = $issueService->search($jql);
+    $ret = $issueService->searchJQL($jql);
     var_dump($ret);
 } catch (JiraRestApi\JiraException $e) {
     $this->assertTrue(false, 'testSearch Failed : '.$e->getMessage());
@@ -1233,7 +1233,7 @@ try {
     $totalCount = -1;	// the number of issues to return
   
     // first fetch
-    $ret = $issueService->search($jql, $startAt, $maxResult);
+    $ret = $issueService->searchJQL($jql, $startAt, $maxResult);
     $totalCount = $ret->total;
   	
     // do something with fetched data

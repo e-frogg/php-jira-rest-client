@@ -15,7 +15,7 @@ class IssueTest extends PHPUnit_Framework_TestCase
         try {
             $issueService = new IssueService();
 
-            $ret = $issueService->search($jql);
+            $ret = $issueService->searchJQL($jql);
 
             foreach ($ret as $issue) {
                 Dumper::dump($issue);

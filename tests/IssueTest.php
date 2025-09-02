@@ -251,7 +251,7 @@ COMMENT;
         try {
             $issueService = new IssueService();
 
-            $ret = $issueService->search($jql);
+            $ret = $issueService->searchJQL($jql);
             Dumper::dump($ret);
         } catch (JiraException $e) {
             $this->assertTrue(false, 'testSearch Failed : '.$e->getMessage());
@@ -267,7 +267,7 @@ COMMENT;
         try {
             $issueService = new IssueService();
 
-            $ret = $issueService->search($jql);
+            $ret = $issueService->searchJQL($jql);
             Dumper::dump($ret);
         } catch (JiraException $e) {
             $this->assertTrue(false, 'testSearch Failed : '.$e->getMessage());
