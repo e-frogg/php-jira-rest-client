@@ -533,6 +533,7 @@ class IssueService extends \JiraRestApi\JiraClient
      * @throws JiraException
      *
      * @return IssueSearchResult
+     * @deprecated use searchJQL() instead
      */
     public function search(string $jql, int $startAt = 0, int $maxResults = 15, array $fields = [], array $expand = [], bool $validateQuery = true): IssueSearchResult
     {
@@ -553,6 +554,49 @@ class IssueService extends \JiraRestApi\JiraClient
         $result = $this->json_mapper->map(
             $json,
             new IssueSearchResult()
+        );
+
+        return $result;
+    }
+
+    /**
+     * Search issues.
+     *
+     * @param string $jql
+     * @param ?string $pageToken
+     *  the page token to use in the call. If null, it starts from the beginning.
+     * @param int    $maxResults
+     * @param array  $fields
+     * @param array  $expand
+     * @param ?string $nextPageToken
+     *   the next page token to use in the next call. If null, there is no next page.
+     *
+     * @throws JiraException
+     * @throws \JsonMapper_Exception
+     *
+     * @return IssueSearchResult|object
+     *
+     * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-post
+     */
+    public function searchJQL($jql, $pageToken = null, $maxResults = 15, $fields = [], $expand = [], &$nextPageToken = null)
+    {
+        $data = json_encode([
+            'jql'           => $jql,
+            'nextPageToken'       => $pageToken,
+            'maxResults'    => $maxResults,
+            'fields'        => $fields,
+            'expand'        => implode(',',$expand),
+        ]);
+
+        $ret = $this->exec('/search/jql', $data, 'POST');
+        $json = json_decode($ret);
+
+        if(isset($json->nextPageToken)) {
+            $nextPageToken = $json->nextPageToken;
+        }
+
+        $result = $this->json_mapper->map(
+            $json, new IssueSearchResult()
         );
 
         return $result;
